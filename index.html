@@ -55,11 +55,14 @@
       }
 
       .container {
-        width: 80%;
+        width: 60%;
         height: 100%;
-        display: flex;
-        justify-content: center;
+        margin: 0 auto;
         margin-top: 50px;
+      }
+
+      .content {
+        width: 800px;
       }
 
       .caroussel-container {
@@ -95,6 +98,8 @@
 
       .images-wrapper {
         flex-shrink: 0;
+        display: flex;
+        gap: 5px;
       }
 
       p.word-description {
@@ -120,9 +125,9 @@
         color: black;
       }
 
-      div[class^="images-"],
-      div[class*=" images-"] {
-        display: none;
+      div.all-words {
+        margin-top: 20px;
+        max-width: 400px;
       }
     </style>
   </head>
@@ -134,45 +139,17 @@
         <p class="location">Bordeaux - FRANCE</p>
         <div class="caroussel-container">
           <div class="caroussel-image">
-            <div class="images-wrapper">
-              <div class="images-chien-de-pluie">
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-              </div>
-              <div class="images-landes-de-gascognes">
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-              </div>
-              <div class="images-eclairs">
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-              </div>
-              <div class="images-reportages">
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-              </div>
-              <div class="images-notes">
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-                <img src="./assets/placeholder.jpg" width="150px" />
-              </div>
-              <div class="images-confession-dun-enfoire">
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-                <img src="./assets/placeholder2.jpg" width="150px" />
-              </div>
-            </div>
+            <div class="images-wrapper"></div>
             <p class="word-description"></p>
           </div>
-          <span class="word">Chien de pluie</span>,
-          <span class="word">Landes de gascognes</span>,
-          <span class="word">Éclairs</span>,
-          <span class="word">Reportages</span>, <span class="word">Notes</span>,
-          <span class="word">Confession d'un enfoiré</span>
+          <div class="all-words">
+            <span class="word">Chien de pluie</span>,
+            <span class="word">Landes de gascognes</span>,
+            <span class="word">Éclairs</span>,
+            <span class="word">Reportages</span>,
+            <span class="word">Notes</span>,
+            <span class="word">Confession d'un enfoiré</span>
+          </div>
         </div>
         <a href="#"><img src="./assets/letter.jpg" width="40px" /></a>
       </div>
@@ -181,60 +158,81 @@
       window.addEventListener("DOMContentLoaded", () => {
         const wordToClass = {
           "Chien de pluie": {
-            name: "images-chien-de-pluie",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Chien de pluie.",
+            images: [
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+            ],
           },
           "Landes de gascognes": {
-            name: "images-landes-de-gascognes",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Landes de gascognes.",
+            images: [
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+            ],
           },
           Éclairs: {
-            name: "images-eclairs",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Éclairs.",
+            images: [
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+            ],
           },
           Reportages: {
-            name: "images-reportages",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Reportages.",
+            images: [
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+            ],
           },
           Notes: {
-            name: "images-notes",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Notes.",
+            images: [
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+              "./assets/placeholder.jpg",
+            ],
           },
           "Confession d'un enfoiré": {
-            name: "images-confession-dun-enfoire",
-            description:
-              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
+            description: "Description for Confession d'un enfoiré.",
+            images: [
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+              "./assets/placeholder2.jpg",
+            ],
           },
         };
 
         const words = document.querySelectorAll(".word");
-        const allImageGroups = document.querySelectorAll(
-          ".images-wrapper > div"
-        );
+        const imagesWrapper = document.querySelector(".images-wrapper");
+        const descriptionElement = document.querySelector(".word-description");
 
         words.forEach((word) => {
           word.addEventListener("click", () => {
             words.forEach((w) => (w.style.color = "#727272"));
             word.style.color = "black";
-            allImageGroups.forEach((group) => (group.style.display = "none"));
 
-            const wordDict = wordToClass[word.textContent.trim()];
-            const targetClass = wordDict.name;
-            const targetDivName = document.querySelector(`.${targetClass}`);
-            if (targetDivName) targetDivName.style.display = "block";
-            const targetImages = document.querySelector(
-              'div[class^="images-"]'
-            );
-            if (targetImages) targetImages.style.display = "block";
-            const targetDivDescription =
-              document.querySelector(".word-description");
-            if (targetDivDescription)
-              targetDivDescription.innerHTML = wordDict.description;
+            const wordData = wordToClass[word.textContent.trim()];
+
+            imagesWrapper.innerHTML = "";
+            descriptionElement.innerHTML = "";
+
+            if (wordData) {
+              descriptionElement.innerHTML = wordData.description;
+
+              if (wordData.images && wordData.images.length > 0) {
+                wordData.images.forEach((src) => {
+                  const img = document.createElement("img");
+                  img.src = src;
+                  img.width = 150;
+                  imagesWrapper.appendChild(img);
+                });
+              }
+            }
           });
         });
 
@@ -242,7 +240,7 @@
         const text = title.textContent.trim();
         const chars = "!@#$%^&*()_+{}[]<>?/\\|~-=;:".split("");
         let iterations = 0;
-        const duration = 1000; // total duration in ms
+        const duration = 1000;
         const interval = 20;
         const steps = duration / interval;
 
