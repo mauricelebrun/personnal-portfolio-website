@@ -96,11 +96,48 @@
         align-items: flex-start;
       }
 
+      /* --- NEW CAROUSEL STYLES --- */
+
+      .carousel-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .carousel-viewport {
+        overflow: hidden;
+        /* Width of 3 images (150px each) + 2 gaps (5px each) */
+        width: calc(150px * 3 + 5px * 2);
+      }
+
       .images-wrapper {
-        flex-shrink: 0;
+        /* flex-shrink is now handled by the viewport */
         display: flex;
         gap: 5px;
+        /* Smooth transition for sliding */
+        transition: transform 0.5s ease-in-out;
       }
+
+      .carousel-button {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #b0b0b0;
+        cursor: pointer;
+        padding: 0 10px;
+        transition: color 0.2s ease;
+      }
+
+      .carousel-button:hover {
+        color: #000;
+      }
+
+      .carousel-button.hidden {
+        visibility: hidden;
+      }
+
+      /* --- END NEW CAROUSEL STYLES --- */
 
       p.word-description {
         font-family: "Avenir Book";
@@ -139,7 +176,13 @@
         <p class="location">Bordeaux - FRANCE</p>
         <div class="caroussel-container">
           <div class="caroussel-image">
-            <div class="images-wrapper"></div>
+            <div class="carousel-wrapper">
+              <button id="prevBtn" class="carousel-button">&lt;</button>
+              <div class="carousel-viewport">
+                <div class="images-wrapper"></div>
+              </div>
+              <button id="nextBtn" class="carousel-button">&gt;</button>
+            </div>
             <p class="word-description"></p>
           </div>
           <div class="all-words">
@@ -161,9 +204,9 @@
             description: "Description for Chien de pluie.",
             images: [
               "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
             ],
           },
@@ -171,9 +214,9 @@
             description: "Description for Landes de gascognes.",
             images: [
               "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
             ],
           },
@@ -181,9 +224,9 @@
             description: "Description for Éclairs.",
             images: [
               "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
             ],
           },
@@ -191,9 +234,9 @@
             description: "Description for Reportages.",
             images: [
               "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
             ],
           },
@@ -201,9 +244,9 @@
             description: "Description for Notes.",
             images: [
               "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
-              "./assets/placeholder.jpg",
+              "./assets/placeholder2.jpg",
               "./assets/placeholder.jpg",
             ],
           },
@@ -211,17 +254,125 @@
             description: "Description for Confession d'un enfoiré.",
             images: [
               "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
               "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
-              "./assets/placeholder2.jpg",
+              "./assets/placeholder.jpg",
             ],
           },
         };
 
         const words = document.querySelectorAll(".word");
-        const imagesWrapper = document.querySelector(".images-wrapper");
         const descriptionElement = document.querySelector(".word-description");
+
+        // --- START CAROUSEL LOGIC ---
+
+        const imagesWrapper = document.querySelector(".images-wrapper");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        const ITEMS_TO_SHOW = 3;
+        const IMAGE_WIDTH = 150;
+        const GAP = 5;
+        const SLIDE_WIDTH = IMAGE_WIDTH + GAP;
+
+        let activeIndex = 0;
+        let currentImages = [];
+        let isTransitioning = false;
+
+        function updateCarousel(images) {
+          currentImages = images;
+          activeIndex = 0;
+          imagesWrapper.innerHTML = "";
+          imagesWrapper.style.transition = "none"; // Disable transitions during setup
+
+          // Hide buttons if not enough images for a carousel
+          if (currentImages.length <= ITEMS_TO_SHOW) {
+            prevBtn.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            // Just display the images without cloning
+            images.forEach((src) => {
+              const img = document.createElement("img");
+              img.src = src;
+              img.width = IMAGE_WIDTH;
+              imagesWrapper.appendChild(img);
+            });
+            imagesWrapper.style.transform = "translateX(0px)";
+            return;
+          }
+
+          prevBtn.classList.remove("hidden");
+          nextBtn.classList.remove("hidden");
+
+          // 1. Create clones for infinite loop
+          const clonesStart = images.slice(-ITEMS_TO_SHOW); // Last 3 images
+          const clonesEnd = images.slice(0, ITEMS_TO_SHOW); // First 3 images
+
+          // 2. Populate the wrapper: [clones of end, real images, clones of start]
+          const allSlides = [...clonesStart, ...images, ...clonesEnd];
+
+          allSlides.forEach((src) => {
+            const img = document.createElement("img");
+            img.src = src;
+            img.width = IMAGE_WIDTH;
+            imagesWrapper.appendChild(img);
+          });
+
+          // 3. Set initial position to show the start of the "real" images
+          const initialOffset = -SLIDE_WIDTH * ITEMS_TO_SHOW;
+          imagesWrapper.style.transform = `translateX(${initialOffset}px)`;
+
+          // Use a timeout to re-enable transitions after the initial position is set
+          setTimeout(() => {
+            imagesWrapper.style.transition = "transform 0.5s ease-in-out";
+          }, 50);
+        }
+
+        function moveToNext() {
+          if (isTransitioning) return;
+          isTransitioning = true;
+          activeIndex++;
+          const offset = -SLIDE_WIDTH * (activeIndex + ITEMS_TO_SHOW);
+          imagesWrapper.style.transform = `translateX(${offset}px)`;
+        }
+
+        function moveToPrev() {
+          if (isTransitioning) return;
+          isTransitioning = true;
+          activeIndex--;
+          const offset = -SLIDE_WIDTH * (activeIndex + ITEMS_TO_SHOW);
+          imagesWrapper.style.transform = `translateX(${offset}px)`;
+        }
+
+        function handleTransitionEnd() {
+          // If we've slid to a clone at the end, jump back to the start of real images
+          if (activeIndex >= currentImages.length) {
+            imagesWrapper.style.transition = "none";
+            activeIndex = 0;
+            const offset = -SLIDE_WIDTH * (activeIndex + ITEMS_TO_SHOW);
+            imagesWrapper.style.transform = `translateX(${offset}px)`;
+            // If we've slid to a clone at the start, jump back to the end of real images
+          } else if (activeIndex < 0) {
+            imagesWrapper.style.transition = "none";
+            activeIndex = currentImages.length - 1;
+            const offset = -SLIDE_WIDTH * (activeIndex + ITEMS_TO_SHOW);
+            imagesWrapper.style.transform = `translateX(${offset}px)`;
+          }
+
+          // Re-enable transitions after the jump
+          setTimeout(() => {
+            imagesWrapper.style.transition = "transform 0.5s ease-in-out";
+          }, 50);
+
+          isTransitioning = false;
+        }
+
+        nextBtn.addEventListener("click", moveToNext);
+        prevBtn.addEventListener("click", moveToPrev);
+        imagesWrapper.addEventListener("transitionend", handleTransitionEnd);
+
+        // --- END CAROUSEL LOGIC ---
 
         words.forEach((word) => {
           word.addEventListener("click", () => {
@@ -229,25 +380,25 @@
             word.style.color = "black";
 
             const wordData = wordToClass[word.textContent.trim()];
-
-            imagesWrapper.innerHTML = "";
             descriptionElement.innerHTML = "";
 
             if (wordData) {
               descriptionElement.innerHTML = wordData.description;
-
-              if (wordData.images && wordData.images.length > 0) {
-                wordData.images.forEach((src) => {
-                  const img = document.createElement("img");
-                  img.src = src;
-                  img.width = 150;
-                  imagesWrapper.appendChild(img);
-                });
-              }
+              // Call the new carousel update function
+              updateCarousel(wordData.images || []);
+            } else {
+              // Clear carousel if no data found
+              updateCarousel([]);
             }
           });
         });
 
+        // Trigger a click on the first word on page load
+        if (words.length > 0) {
+          words[0].click();
+        }
+
+        // Title Scramble Effect (Unchanged)
         const title = document.querySelector(".maurice-lebrun");
         const text = title.textContent.trim();
         const chars = "!@#$%^&*()_+{}[]<>?/\\|~-=;:".split("");
