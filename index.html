@@ -69,6 +69,16 @@
         margin-top: 40px;
         margin-bottom: 50px;
         color: #727272;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out,
+          margin-top 0.5s ease-in-out;
+      }
+
+      .caroussel-container.visible {
+        max-height: 500px;
+        opacity: 1;
       }
 
       .maurice-lebrun {
@@ -150,6 +160,7 @@
         font-weight: bold;
         font-style: oblique;
         cursor: pointer;
+        transition: color 0.2s ease;
       }
 
       span.word-highlight {
@@ -164,7 +175,27 @@
 
       div.all-words {
         margin-top: 20px;
+        margin-bottom: 30px;
         max-width: 400px;
+        transition: margin-top 0.5s ease-in-out;
+      }
+
+      div.all-words.pushed {
+        margin-top: 10px;
+      }
+
+      .selected-word-display {
+        font-family: "Avenir Book";
+        font-weight: bold;
+        font-style: oblique;
+        color: black;
+        margin-bottom: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .selected-word-display.visible {
+        opacity: 1;
       }
     </style>
   </head>
@@ -175,6 +206,7 @@
         <p class="headline">ARTS NUMÉRIQUES VISUELS & SONORES / DOCUMENTAIRE</p>
         <p class="location">Bordeaux - FRANCE</p>
         <div class="caroussel-container">
+          <div class="selected-word-display"></div>
           <div class="caroussel-image">
             <div class="carousel-wrapper">
               <button id="prevBtn" class="carousel-button">&lt;</button>
@@ -185,14 +217,13 @@
             </div>
             <p class="word-description"></p>
           </div>
-          <div class="all-words">
-            <span class="word">Chien de pluie</span>,
-            <span class="word">Landes de gascognes</span>,
-            <span class="word">Éclairs</span>,
-            <span class="word">Reportages</span>,
-            <span class="word">Notes</span>,
-            <span class="word">Confession d'un enfoiré</span>
-          </div>
+        </div>
+        <div class="all-words">
+          <span class="word">Chien de pluie</span>,
+          <span class="word">Landes de gascognes</span>,
+          <span class="word">Éclairs</span>,
+          <span class="word">Reportages</span>, <span class="word">Notes</span>,
+          <span class="word">Confession d'un enfoiré</span>
         </div>
         <a href="#"><img src="./assets/letter.jpg" width="40px" /></a>
       </div>
@@ -265,6 +296,16 @@
 
         const words = document.querySelectorAll(".word");
         const descriptionElement = document.querySelector(".word-description");
+        const carousselContainer = document.querySelector(
+          ".caroussel-container"
+        );
+        const allWordsContainer = document.querySelector(".all-words");
+        const selectedWordDisplay = document.querySelector(
+          ".selected-word-display"
+        );
+
+        let carouselVisible = false;
+        let currentSelectedWord = null;
 
         // --- START CAROUSEL LOGIC ---
 
@@ -376,8 +417,14 @@
 
         words.forEach((word) => {
           word.addEventListener("click", () => {
+            // Reset previous selected word color
             words.forEach((w) => (w.style.color = "#727272"));
+
+            // Set new word color
             word.style.color = "black";
+
+            // Update selected word display
+            selectedWordDisplay.textContent = word.textContent.trim();
 
             const wordData = wordToClass[word.textContent.trim()];
             descriptionElement.innerHTML = "";
@@ -390,13 +437,20 @@
               // Clear carousel if no data found
               updateCarousel([]);
             }
+
+            // Show carousel and push word cloud if first time
+            if (!carouselVisible) {
+              carouselVisible = true;
+              carousselContainer.classList.add("visible");
+              allWordsContainer.classList.add("pushed");
+              setTimeout(() => {
+                selectedWordDisplay.classList.add("visible");
+              }, 300);
+            }
+
+            currentSelectedWord = word;
           });
         });
-
-        // Trigger a click on the first word on page load
-        if (words.length > 0) {
-          words[0].click();
-        }
 
         // Title Scramble Effect (Unchanged)
         const title = document.querySelector(".maurice-lebrun");
