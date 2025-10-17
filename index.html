@@ -87,6 +87,11 @@
         margin: 0;
       }
 
+      p.word-description {
+        font-family: "Avenir Book";
+        text-align: end;
+      }
+
       span.word {
         font-family: "Avenir Book";
         font-weight: bold;
@@ -148,6 +153,7 @@
               <img src="./assets/placeholder2.jpg" width="150px" />
               <img src="./assets/placeholder2.jpg" width="150px" />
             </div>
+            <p class="word-description"></p>
           </div>
           <span class="word">Chien de pluie</span>,
           <span class="word">Landes de gascognes</span>,
@@ -166,12 +172,36 @@
         }
 
         const wordToClass = {
-          "Chien de pluie": "images-chien-de-pluie",
-          "Landes de gascognes": "images-landes-de-gascognes",
-          Éclairs: "images-eclairs",
-          Reportages: "images-reportages",
-          Notes: "images-notes",
-          "Confession d'un enfoiré": "images-confession-dun-enfoire",
+          "Chien de pluie": {
+            name: "images-chien-de-pluie",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+          "Landes de gascognes": {
+            name: "images-landes-de-gascognes",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+          Éclairs: {
+            name: "images-eclairs",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+          Reportages: {
+            name: "images-reportages",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+          Notes: {
+            name: "images-notes",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
+          "Confession d'un enfoiré": {
+            name: "images-confession-dun-enfoire",
+            description:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          },
         };
 
         const words = document.querySelectorAll(".word");
@@ -184,9 +214,15 @@
             words.forEach((w) => (w.style.color = "#727272"));
             word.style.color = "black";
             allImageGroups.forEach((group) => (group.style.display = "none"));
-            const targetClass = wordToClass[word.textContent.trim()];
-            const targetDiv = document.querySelector(`.${targetClass}`);
-            if (targetDiv) targetDiv.style.display = "block";
+            wordToClass;
+            const wordDict = wordToClass[word.textContent.trim()];
+            const targetClass = wordDict.name;
+            const targetDivName = document.querySelector(`.${targetClass}`);
+            if (targetDivName) targetDivName.style.display = "block";
+            const targetDivDescription =
+              document.querySelector(".word-description");
+            if (targetDivDescription)
+              targetDivDescription.innerHTML = wordDict.description;
           });
         });
 
