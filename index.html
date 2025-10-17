@@ -165,10 +165,21 @@
         position: relative;
       }
 
+      span.word:not(:last-child):after {
+        content: ", ";
+        font-weight: normal;
+        font-style: normal;
+      }
+
       span.word.moving {
         position: fixed;
         transition: all 0.5s ease-in-out;
         z-index: 1000;
+      }
+
+      span.word.moving:after,
+      span.word.at-top:after {
+        content: none;
       }
 
       span.word.at-top {
@@ -228,11 +239,11 @@
           </div>
         </div>
         <div class="all-words">
-          <span class="word">Chien de pluie</span>,
-          <span class="word">Landes de gascognes</span>,
-          <span class="word">Éclairs</span>,
-          <span class="word">Reportages</span>, <span class="word">Notes</span>,
-          <span class="word">Confession d'un enfoiré</span>
+          <span class="word">Chien de pluie</span
+          ><span class="word">Landes de gascognes</span
+          ><span class="word">Éclairs</span><span class="word">Reportages</span
+          ><span class="word">Notes</span
+          ><span class="word">Confession d'un enfoiré</span>
         </div>
         <a href="#"><img src="./assets/letter.jpg" width="40px" /></a>
       </div>
