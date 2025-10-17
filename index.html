@@ -163,6 +163,7 @@
         cursor: pointer;
         transition: color 0.2s ease;
         position: relative;
+        color: #727272;
       }
 
       span.word:not(:last-child):after {
@@ -530,9 +531,6 @@
             // Move new word to top
             currentPlaceholder = moveWordToTop(word);
             currentSelectedWord = word;
-
-            // Update color
-            word.style.color = "black";
 
             const wordData = wordToClass[word.textContent.trim()];
             descriptionElement.innerHTML = "";
