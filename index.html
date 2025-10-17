@@ -63,6 +63,7 @@
 
       .content {
         width: 800px;
+        position: relative;
       }
 
       .caroussel-container {
@@ -161,6 +162,18 @@
         font-style: oblique;
         cursor: pointer;
         transition: color 0.2s ease;
+        position: relative;
+      }
+
+      span.word.moving {
+        position: fixed;
+        transition: all 0.5s ease-in-out;
+        z-index: 1000;
+      }
+
+      span.word.at-top {
+        position: absolute;
+        color: black;
       }
 
       span.word-highlight {
@@ -184,18 +197,15 @@
         margin-top: 10px;
       }
 
-      .selected-word-display {
-        font-family: "Avenir Book";
-        font-weight: bold;
-        font-style: oblique;
-        color: black;
-        margin-bottom: 10px;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
+      .selected-word-placeholder {
+        display: inline;
+        visibility: hidden;
       }
 
-      .selected-word-display.visible {
-        opacity: 1;
+      .selected-word-container {
+        margin-bottom: 10px;
+        min-height: 20px;
+        position: relative;
       }
     </style>
   </head>
@@ -206,7 +216,7 @@
         <p class="headline">ARTS NUMÉRIQUES VISUELS & SONORES / DOCUMENTAIRE</p>
         <p class="location">Bordeaux - FRANCE</p>
         <div class="caroussel-container">
-          <div class="selected-word-display"></div>
+          <div class="selected-word-container"></div>
           <div class="caroussel-image">
             <div class="carousel-wrapper">
               <button id="prevBtn" class="carousel-button">&lt;</button>
@@ -300,12 +310,22 @@
           ".caroussel-container"
         );
         const allWordsContainer = document.querySelector(".all-words");
-        const selectedWordDisplay = document.querySelector(
-          ".selected-word-display"
+        const selectedWordContainer = document.querySelector(
+          ".selected-word-container"
         );
 
         let carouselVisible = false;
         let currentSelectedWord = null;
+        let wordOriginalPositions = new Map();
+
+        // Store original positions of all words
+        words.forEach((word) => {
+          const rect = word.getBoundingClientRect();
+          wordOriginalPositions.set(word, {
+            top: rect.top,
+            left: rect.left,
+          });
+        });
 
         // --- START CAROUSEL LOGIC ---
 
@@ -415,26 +435,102 @@
 
         // --- END CAROUSEL LOGIC ---
 
+        function moveWordToTop(word) {
+          // Get current position of word
+          const startRect = word.getBoundingClientRect();
+
+          // Get target position (top-left of carousel container)
+          const targetRect = selectedWordContainer.getBoundingClientRect();
+
+          // Create placeholder to maintain space in word cloud
+          const placeholder = document.createElement("span");
+          placeholder.className = "selected-word-placeholder";
+          placeholder.textContent = word.textContent;
+          word.parentNode.insertBefore(placeholder, word);
+
+          // Set word to fixed position at its current location
+          word.classList.add("moving");
+          word.style.top = startRect.top + "px";
+          word.style.left = startRect.left + "px";
+
+          // Force reflow
+          word.offsetHeight;
+
+          // Animate to target position
+          word.style.top = targetRect.top + "px";
+          word.style.left = targetRect.left + "px";
+
+          // After animation completes, position it absolutely within container
+          setTimeout(() => {
+            word.classList.remove("moving");
+            word.classList.add("at-top");
+            word.style.top = "";
+            word.style.left = "";
+            selectedWordContainer.appendChild(word);
+          }, 500);
+
+          return placeholder;
+        }
+
+        function moveWordBack(word, placeholder) {
+          if (!placeholder || !placeholder.parentNode) return;
+
+          // Get current position
+          const startRect = word.getBoundingClientRect();
+
+          // Get target position (where placeholder is)
+          const targetRect = placeholder.getBoundingClientRect();
+
+          // Remove from top container and set to fixed at current position
+          word.classList.remove("at-top");
+          word.classList.add("moving");
+          word.style.top = startRect.top + "px";
+          word.style.left = startRect.left + "px";
+          document.body.appendChild(word);
+
+          // Force reflow
+          word.offsetHeight;
+
+          // Animate back to placeholder position
+          word.style.top = targetRect.top + "px";
+          word.style.left = targetRect.left + "px";
+
+          // After animation, put it back in place
+          setTimeout(() => {
+            word.classList.remove("moving");
+            word.style.top = "";
+            word.style.left = "";
+            word.style.color = "#727272";
+            placeholder.parentNode.replaceChild(word, placeholder);
+          }, 500);
+        }
+
+        let currentPlaceholder = null;
+
         words.forEach((word) => {
           word.addEventListener("click", () => {
-            // Reset previous selected word color
-            words.forEach((w) => (w.style.color = "#727272"));
+            // If clicking the same word, do nothing
+            if (word === currentSelectedWord) return;
 
-            // Set new word color
+            // Move previous word back if exists
+            if (currentSelectedWord && currentPlaceholder) {
+              moveWordBack(currentSelectedWord, currentPlaceholder);
+            }
+
+            // Move new word to top
+            currentPlaceholder = moveWordToTop(word);
+            currentSelectedWord = word;
+
+            // Update color
             word.style.color = "black";
-
-            // Update selected word display
-            selectedWordDisplay.textContent = word.textContent.trim();
 
             const wordData = wordToClass[word.textContent.trim()];
             descriptionElement.innerHTML = "";
 
             if (wordData) {
               descriptionElement.innerHTML = wordData.description;
-              // Call the new carousel update function
               updateCarousel(wordData.images || []);
             } else {
-              // Clear carousel if no data found
               updateCarousel([]);
             }
 
@@ -443,12 +539,7 @@
               carouselVisible = true;
               carousselContainer.classList.add("visible");
               allWordsContainer.classList.add("pushed");
-              setTimeout(() => {
-                selectedWordDisplay.classList.add("visible");
-              }, 300);
             }
-
-            currentSelectedWord = word;
           });
         });
 
