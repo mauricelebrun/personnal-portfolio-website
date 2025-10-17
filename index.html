@@ -87,9 +87,20 @@
         margin: 0;
       }
 
+      .caroussel-image {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .images-wrapper {
+        flex-shrink: 0;
+      }
+
       p.word-description {
         font-family: "Avenir Book";
-        text-align: end;
+        text-align: left;
+        max-width: 280px;
       }
 
       span.word {
@@ -123,35 +134,37 @@
         <p class="location">Bordeaux - FRANCE</p>
         <div class="caroussel-container">
           <div class="caroussel-image">
-            <div class="images-chien-de-pluie">
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-            </div>
-            <div class="images-landes-de-gascognes">
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
-            </div>
-            <div class="images-eclairs">
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-            </div>
-            <div class="images-reportages">
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
-            </div>
-            <div class="images-notes">
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-              <img src="./assets/placeholder.jpg" width="150px" />
-            </div>
-            <div class="images-confession-dun-enfoire">
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
-              <img src="./assets/placeholder2.jpg" width="150px" />
+            <div class="images-wrapper">
+              <div class="images-chien-de-pluie">
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+              </div>
+              <div class="images-landes-de-gascognes">
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+              </div>
+              <div class="images-eclairs">
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+              </div>
+              <div class="images-reportages">
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+              </div>
+              <div class="images-notes">
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+                <img src="./assets/placeholder.jpg" width="150px" />
+              </div>
+              <div class="images-confession-dun-enfoire">
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+                <img src="./assets/placeholder2.jpg" width="150px" />
+              </div>
             </div>
             <p class="word-description"></p>
           </div>
@@ -166,47 +179,42 @@
     </div>
     <script>
       window.addEventListener("DOMContentLoaded", () => {
-        function displayCarousselImages() {
-          const images = document.getElementsByClassName("caroussel-image");
-          for (let img of images) img.style.display = "block";
-        }
-
         const wordToClass = {
           "Chien de pluie": {
             name: "images-chien-de-pluie",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
           "Landes de gascognes": {
             name: "images-landes-de-gascognes",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
           Éclairs: {
             name: "images-eclairs",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
           Reportages: {
             name: "images-reportages",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
           Notes: {
             name: "images-notes",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
           "Confession d'un enfoiré": {
             name: "images-confession-dun-enfoire",
             description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+              "Lorem ipsum dolor sit amet, incididunt ut labore et dolore magna aliqua.",
           },
         };
 
         const words = document.querySelectorAll(".word");
         const allImageGroups = document.querySelectorAll(
-          ".caroussel-image > div"
+          ".images-wrapper > div"
         );
 
         words.forEach((word) => {
@@ -214,11 +222,15 @@
             words.forEach((w) => (w.style.color = "#727272"));
             word.style.color = "black";
             allImageGroups.forEach((group) => (group.style.display = "none"));
-            wordToClass;
+
             const wordDict = wordToClass[word.textContent.trim()];
             const targetClass = wordDict.name;
             const targetDivName = document.querySelector(`.${targetClass}`);
             if (targetDivName) targetDivName.style.display = "block";
+            const targetImages = document.querySelector(
+              'div[class^="images-"]'
+            );
+            if (targetImages) targetImages.style.display = "block";
             const targetDivDescription =
               document.querySelector(".word-description");
             if (targetDivDescription)
