@@ -9,8 +9,76 @@
         <h1 class="maurice-lebrun">MAURICE LEBRUN</h1>
         <p class="headline">ARTS NUMÉRIQUES VISUELS & SONORES / DOCUMENTAIRE</p>
         <p class="location">Bordeaux - FRANCE</p>
+        <div class="caroussel-container">
+          <div class="caroussel-image">
+            <div class="images-chien-de-pluie">
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+            </div>
+            <div class="images-landes-de-gascognes">
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+            </div>
+            <div class="images-eclairs">
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+            </div>
+            <div class="images-reportages">
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+            </div>
+            <div class="images-notes">
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+              <img src="./assets/placeholder.jpg" width="150px" />
+            </div>
+            <div class="images-confession-dun-enfoire">
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+              <img src="./assets/placeholder2.jpg" width="150px" />
+            </div>
+          </div>
+          <span class="word">Chien de pluie</span>,
+          <span class="word">Landes de gascognes</span>,
+          <span class="word">Éclairs</span>,
+          <span class="word">Reportages</span>, <span class="word">Notes</span>,
+          <span class="word">Confession d'un enfoiré</span>
+        </div>
         <a href="#"><img src="./assets/letter.jpg" width="40px" /></a>
       </div>
     </div>
+    <script>
+      function displayCarousselImages() {
+        const images = document.getElementsByClassName("caroussel-image");
+        for (let img of images) img.style.display = "block";
+      }
+
+      const wordToClass = {
+        "Chien de pluie": "images-chien-de-pluie",
+        "Landes de gascognes": "images-landes-de-gascognes",
+        Éclairs: "images-eclairs",
+        Reportages: "images-reportages",
+        Notes: "images-notes",
+        "Confession d'un enfoiré": "images-confession-dun-enfoire",
+      };
+
+      const words = document.querySelectorAll(".word");
+      const allImageGroups = document.querySelectorAll(
+        ".caroussel-image > div"
+      );
+
+      words.forEach((word) => {
+        word.addEventListener("click", () => {
+          allImageGroups.forEach((group) => (group.style.display = "none"));
+          const targetClass = wordToClass[word.textContent.trim()];
+          const targetDiv = document.querySelector(`.${targetClass}`);
+          if (targetDiv) targetDiv.style.display = "block";
+        });
+      });
+    </script>
   </body>
 </html>
