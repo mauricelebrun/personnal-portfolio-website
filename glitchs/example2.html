@@ -68,13 +68,11 @@
         color: #727272;
       }
 
-      .maurice-lebrun {
+      h1.maurice-lebrun {
         font-family: "Avenir Black";
         margin: 0;
         font-size: 60px;
         line-height: 0.8;
-        letter-spacing: 2px;
-        white-space: pre;
       }
 
       p.headline {
@@ -181,8 +179,6 @@
 
         words.forEach((word) => {
           word.addEventListener("click", () => {
-            words.forEach((w) => (w.style.color = "#727272"));
-            word.style.color = "black";
             allImageGroups.forEach((group) => (group.style.display = "none"));
             const targetClass = wordToClass[word.textContent.trim()];
             const targetDiv = document.querySelector(`.${targetClass}`);
@@ -191,32 +187,7 @@
         });
 
         const title = document.querySelector(".maurice-lebrun");
-        const text = title.textContent.trim();
-        const chars = "!@#$%^&*()_+{}[]<>?/\\|~-=;:".split("");
-        let iterations = 0;
-        const duration = 1000; // total duration in ms
-        const interval = 20;
-        const steps = duration / interval;
-
-        const scramble = setInterval(() => {
-          let displayed = "";
-          for (let i = 0; i < text.length; i++) {
-            if (i < (iterations / steps) * text.length) {
-              displayed += text[i];
-            } else if (text[i] === " ") {
-              displayed += " ";
-            } else {
-              displayed += chars[Math.floor(Math.random() * chars.length)];
-            }
-          }
-          title.textContent = displayed;
-
-          iterations++;
-          if (iterations > steps) {
-            clearInterval(scramble);
-            title.textContent = text;
-          }
-        }, interval);
+        title.classList.add("glitch");
       });
     </script>
   </body>
