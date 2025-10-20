@@ -238,10 +238,25 @@
       }
 
       .lightbox img {
-        max-width: 90%;
-        max-height: 90%;
+        max-width: 90vw;
+        max-height: 80vh;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         border-radius: 4px;
+      }
+
+      .lightbox-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .lightbox-label {
+        margin-top: 8px;
+        font-family: "Avenir Black";
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
       }
 
       .images-wrapper img {
@@ -611,8 +626,18 @@
 
         const lightbox = document.createElement("div");
         lightbox.classList.add("lightbox");
+
+        const lightboxContent = document.createElement("div");
+        lightboxContent.classList.add("lightbox-content");
+
         const lightboxImg = document.createElement("img");
-        lightbox.appendChild(lightboxImg);
+        const lightboxLabel = document.createElement("div");
+        lightboxLabel.classList.add("lightbox-label");
+        lightboxLabel.textContent = "highlight";
+
+        lightboxContent.appendChild(lightboxImg);
+        lightboxContent.appendChild(lightboxLabel);
+        lightbox.appendChild(lightboxContent);
         document.body.appendChild(lightbox);
 
         document.addEventListener("click", (e) => {
