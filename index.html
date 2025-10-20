@@ -17,37 +17,6 @@
         src: url(assets/Avenir\ Heavy.ttf);
       }
 
-      @keyframes glitch {
-        0% {
-          text-shadow: 2px 0 red, -2px 0 blue;
-          transform: translate(0);
-        }
-        20% {
-          text-shadow: -2px 0 red, 2px 0 blue;
-          transform: translate(2px, -2px);
-        }
-        40% {
-          text-shadow: 2px 0 red, -2px 0 blue;
-          transform: translate(-2px, 2px);
-        }
-        60% {
-          text-shadow: -1px 0 red, 1px 0 blue;
-          transform: translate(1px, 1px);
-        }
-        80% {
-          text-shadow: 1px 0 red, -1px 0 blue;
-          transform: translate(-1px, -1px);
-        }
-        100% {
-          text-shadow: none;
-          transform: none;
-        }
-      }
-
-      .glitch {
-        animation: glitch 0.5s ease-in-out;
-      }
-
       html,
       body {
         height: 100%;
@@ -107,8 +76,6 @@
         align-items: flex-start;
       }
 
-      /* --- NEW CAROUSEL STYLES --- */
-
       .carousel-wrapper {
         display: flex;
         align-items: center;
@@ -131,7 +98,7 @@
       .carousel-button {
         background: none;
         border: none;
-        font-size: 2rem;
+        font-size: 1.4rem;
         font-weight: bold;
         color: #3f3f3fff;
         cursor: pointer;
@@ -273,11 +240,11 @@
           <div class="selected-word-container"></div>
           <div class="caroussel-image">
             <div class="carousel-wrapper">
-              <button id="prevBtn" class="carousel-button">&lt;</button>
+              <button id="prevBtn" class="carousel-button">&#9664;</button>
               <div class="carousel-viewport">
                 <div class="images-wrapper"></div>
               </div>
-              <button id="nextBtn" class="carousel-button">&gt;</button>
+              <button id="nextBtn" class="carousel-button">&#9654;</button>
             </div>
             <p class="word-description"></p>
           </div>
@@ -380,8 +347,6 @@
             left: rect.left,
           });
         });
-
-        // --- START CAROUSEL LOGIC ---
 
         const imagesWrapper = document.querySelector(".images-wrapper");
         const prevBtn = document.getElementById("prevBtn");
@@ -487,8 +452,6 @@
         prevBtn.addEventListener("click", moveToPrev);
         imagesWrapper.addEventListener("transitionend", handleTransitionEnd);
 
-        // --- END CAROUSEL LOGIC ---
-
         function moveWordToTop(word) {
           // Get current position of word
           const startRect = word.getBoundingClientRect();
@@ -593,35 +556,6 @@
             }
           });
         });
-
-        // Title Scramble Effect (Unchanged)
-        const title = document.querySelector(".maurice-lebrun");
-        const text = title.textContent.trim();
-        const chars = "!@#$%^&*()_+{}[]<>?/\\|~-=;:".split("");
-        let iterations = 0;
-        const duration = 1000;
-        const interval = 20;
-        const steps = duration / interval;
-
-        const scramble = setInterval(() => {
-          let displayed = "";
-          for (let i = 0; i < text.length; i++) {
-            if (i < (iterations / steps) * text.length) {
-              displayed += text[i];
-            } else if (text[i] === " ") {
-              displayed += " ";
-            } else {
-              displayed += chars[Math.floor(Math.random() * chars.length)];
-            }
-          }
-          title.textContent = displayed;
-
-          iterations++;
-          if (iterations > steps) {
-            clearInterval(scramble);
-            title.textContent = text;
-          }
-        }, interval);
 
         const lightbox = document.createElement("div");
         lightbox.classList.add("lightbox");
