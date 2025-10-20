@@ -148,8 +148,6 @@
         visibility: hidden;
       }
 
-      /* --- END NEW CAROUSEL STYLES --- */
-
       p.word-description {
         font-family: "Avenir Book";
         text-align: left;
@@ -217,6 +215,38 @@
         margin-bottom: 10px;
         min-height: 20px;
         position: relative;
+      }
+
+      .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .lightbox.visible {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .lightbox img {
+        max-width: 90%;
+        max-height: 90%;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+      }
+
+      .images-wrapper img {
+        cursor: pointer;
       }
     </style>
   </head>
@@ -579,6 +609,28 @@
             title.textContent = text;
           }
         }, interval);
+
+        const lightbox = document.createElement("div");
+        lightbox.classList.add("lightbox");
+        const lightboxImg = document.createElement("img");
+        lightbox.appendChild(lightboxImg);
+        document.body.appendChild(lightbox);
+
+        document.addEventListener("click", (e) => {
+          const target = e.target;
+          if (target.tagName === "IMG" && target.closest(".images-wrapper")) {
+            lightboxImg.src = target.src;
+            lightbox.classList.add("visible");
+          } else if (target === lightbox) {
+            lightbox.classList.remove("visible");
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && lightbox.classList.contains("visible")) {
+            lightbox.classList.remove("visible");
+          }
+        });
       });
     </script>
   </body>
