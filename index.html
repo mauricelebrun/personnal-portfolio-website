@@ -122,7 +122,6 @@
       }
 
       .images-wrapper {
-        /* flex-shrink is now handled by the viewport */
         display: flex;
         gap: 5px;
         /* Smooth transition for sliding */
@@ -134,10 +133,10 @@
         border: none;
         font-size: 2rem;
         font-weight: bold;
-        color: #b0b0b0;
+        color: #3f3f3fff;
         cursor: pointer;
         padding: 0 10px;
-        transition: color 0.2s ease;
+        transition: color 0.2s;
       }
 
       .carousel-button:hover {
@@ -230,7 +229,7 @@
         z-index: 2000;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.2s ease;
       }
 
       .lightbox.visible {
