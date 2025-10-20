@@ -256,7 +256,6 @@
         font-family: "Avenir Black";
         font-size: 20px;
         color: white;
-        font-weight: bold;
       }
 
       .images-wrapper img {
@@ -643,7 +642,10 @@
         document.addEventListener("click", (e) => {
           const target = e.target;
           if (target.tagName === "IMG" && target.closest(".images-wrapper")) {
+            if (!currentSelectedWord) return;
+
             lightboxImg.src = target.src;
+            lightboxLabel.textContent = currentSelectedWord.textContent.trim(); // show selected word
             lightbox.classList.add("visible");
           } else if (target === lightbox) {
             lightbox.classList.remove("visible");
